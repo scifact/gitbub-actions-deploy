@@ -1,0 +1,6 @@
+name: 'scifact'
+description: 'test'
+author: 'scifact'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
