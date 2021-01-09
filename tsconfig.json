@@ -1,8 +1,8 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "target": "ES2019",
-        "module": "AMD",
+        "target": "ES2020",
+        "module": "System",
         "moduleResolution": "node",
         "outFile": "./index.js"
     }
