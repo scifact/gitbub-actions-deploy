@@ -1,6 +1,6 @@
-name: 'scifact'
+name: 'SciFact-Deploy'
 description: 'test'
-author: 'scifact'
+author: 'SciFact'
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: 'index.js'
