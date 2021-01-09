@@ -1,12 +1,11 @@
 {
-    "name": "scifact-deploy",
-    "version": "1.0.0",
-    "description": "---",
-    "main": "index.js",
-    "dependencies": {
-      "@actions/core": "^1.2.6",
-      "@actions/exec": "^1.0.4"
-    },
-    "devDependencies": {
-    }
-  }
+  "name": "scifact-deploy",
+  "version": "1.0.0",
+  "description": "---",
+  "main": "index.js",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/exec": "^1.0.4"
+  },
+  "devDependencies": {}
+}
