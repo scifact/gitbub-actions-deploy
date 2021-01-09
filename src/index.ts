@@ -1,4 +1,4 @@
-const core = require('@actions/core');
+import * as core from '@actions/core';
 
 const nameToGreet = core.getInput('who-to-greet');
 console.log(`Hello ${nameToGreet.length}!`);
