@@ -2,10 +2,11 @@
   "name": "scifact-deploy",
   "version": "1.0.0",
   "description": "---",
-  "main": "index.js",
+  "repository": {
+    "url": "https://github.com/scifact/gitbub-actions-deploy"
+  },
   "scripts": {
-    "build": "tsc",
-    "build:watch": "watch 'npm run build' ."
+    "build": "tsc"
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
