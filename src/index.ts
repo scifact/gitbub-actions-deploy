@@ -1,19 +1,52 @@
 import * as core from '@actions/core';
 import * as  github from '@actions/github';
-var fs = require('fs');
-var path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
 
 // console.log(JSON.stringify(github.context));
+import * as util from 'util';
+const readFileAsync = util.promisify(fs.readFile)
 
-getFilesFromDir("../demo", [".json"])
-    .forEach(function (filePath: string) {
+try {
 
-        if (filePath.toLowerCase().endsWith('scif.json')) {
 
-        }
+    var readFileTasks = [];
+    getFilesFromDir("../demo", [".json"])
+        .forEach(function (filePath: string) {
 
-        console.log(filePath);
+            if (filePath.toLowerCase().endsWith('scif.json')) {
+                var t = readFileAsync(filePath, { encoding: 'utf-8' });
+                readFileTasks.push(t);
+            }
+
+            console.log(filePath);
+        });
+
+    Promise.all(readFileTasks).then(fileContents => {
+        fileContents
+            .forEach(function (fileContent: string) {
+                var flow = JSON.parse(fileContent) as Flow;
+                flow.elements.forEach(element => {
+
+                    if (element.settings != null) {
+
+                        // console.log(element.settings);
+
+                        for (var setting in element.settings) {
+                            // setting.value;
+
+                            console.log(setting);
+
+                        };
+                    }
+
+                });
+
+            });
     });
+} catch (ex) {
+    console.error(ex);
+}
 
 function getFilesFromDir(dir, fileTypes) {
     var filesToReturn = [];
