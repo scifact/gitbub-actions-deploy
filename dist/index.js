@@ -4,29 +4,36 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "@actions/github"], factory);
+        define(["require", "exports"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const github = require("@actions/github");
     var fs = require('fs');
-    console.log(JSON.stringify(github.context));
-    fs.readdir('./', function (err, files) {
-        //handling error
-        if (err) {
-            return console.log('Unable to scan directory: ' + err);
+    var path = require('path');
+    // console.log(JSON.stringify(github.context));
+    getFilesFromDir("../demo", [".json"])
+        .forEach(function (filePath) {
+        if (filePath.toLowerCase().endsWith('scif.json')) {
         }
-        //listing all files using forEach
-        files.forEach(function (file) {
-            // Do whatever you want to do with the file
-            console.log(file);
-        });
+        console.log(filePath);
     });
+    function getFilesFromDir(dir, fileTypes) {
+        var filesToReturn = [];
+        function walkDir(currentPath) {
+            var files = fs.readdirSync(currentPath);
+            for (var i in files) {
+                var curFile = path.join(currentPath, files[i]);
+                if (fs.statSync(curFile).isFile() && fileTypes.indexOf(path.extname(curFile)) != -1) {
+                    filesToReturn.push(curFile.replace(dir, ''));
+                }
+                else if (fs.statSync(curFile).isDirectory()) {
+                    walkDir(curFile);
+                }
+            }
+        }
+        ;
+        walkDir(dir);
+        return filesToReturn;
+    }
 });
-// core.getInput
-// const nameToGreet = core.getInput('who-to-greet');
-// console.log(`Hello ${nameToGreet.length}!`);
-// for (var element in process.env) {
-//     core.log(`${element}: ${process.env[element].length}`);
-// };
