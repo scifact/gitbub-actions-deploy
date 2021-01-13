@@ -9,43 +9,57 @@ const readFileAsync = util.promisify(fs.readFile)
 
 try {
 
+    let readFileTasks = getFilesContentAsync('scif.json');
 
+    getSettingVariableNames(readFileTasks)
+        .then(settingNames => settingNames.forEach(s => console.log(s)));
+
+} catch (ex) {
+    console.error(ex);
+}
+
+async function getSettingVariableNames(readFileTasks: Promise<string>[]): Promise<string[]> {
+
+    var fileContents = await Promise.all(readFileTasks);
+
+    var settingNames: string[] = [];
+
+    fileContents
+        .forEach(function (fileContent: string) {
+            var flow = JSON.parse(fileContent) as Flow;
+            flow.elements.forEach(element => {
+
+                if (element.settings != null) {
+                    for (var setting in element.settings) {
+                        var value = element.settings[setting]?.toUpperCase();
+                        if (value) {
+                            if (settingNames.indexOf(value) < 0) {
+                                settingNames.push(value);
+                            }
+                        }
+                    };
+                }
+
+            });
+
+        });
+
+    return settingNames;
+}
+
+function getFilesContentAsync(fileExtention: string): Promise<string>[] {
     var readFileTasks = [];
     getFilesFromDir("../demo", [".json"])
         .forEach(function (filePath: string) {
 
-            if (filePath.toLowerCase().endsWith('scif.json')) {
+            if (filePath.toLowerCase().endsWith(fileExtention)) {
                 var t = readFileAsync(filePath, { encoding: 'utf-8' });
                 readFileTasks.push(t);
             }
 
             console.log(filePath);
         });
-
-    Promise.all(readFileTasks).then(fileContents => {
-        fileContents
-            .forEach(function (fileContent: string) {
-                var flow = JSON.parse(fileContent) as Flow;
-                flow.elements.forEach(element => {
-
-                    if (element.settings != null) {
-
-                        // console.log(element.settings);
-
-                        for (var setting in element.settings) {
-                            // setting.value;
-
-                            console.log(setting);
-
-                        };
-                    }
-
-                });
-
-            });
-    });
-} catch (ex) {
-    console.error(ex);
+    return readFileTasks;
 }
 
 function getFilesFromDir(dir, fileTypes) {

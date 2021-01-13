@@ -1,6 +1,6 @@
 
 interface Element {
-    settings: object[];
+    settings: [key:string];
 }
 
 interface Flow {
