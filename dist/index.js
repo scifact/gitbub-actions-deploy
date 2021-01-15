@@ -4,20 +4,30 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "fs", "path", "util"], factory);
+        define(["require", "exports", "@actions/core", "@actions/github", "fs", "path", "util"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    const core = require("@actions/core");
+    const github = require("@actions/github");
     const fs = require("fs");
     const path = require("path");
-    // console.log(JSON.stringify(github.context));
     const util = require("util");
     const readFileAsync = util.promisify(fs.readFile);
+    const mainPath = './';
     try {
         let readFileTasks = getFilesContentAsync('scif.json');
         getSettingVariableNames(readFileTasks)
-            .then(settingNames => settingNames.forEach(s => console.log(s)));
+            .then(settingNames => {
+            settingNames.forEach(settingName => {
+                let value = core.getInput(settingName, { required: true });
+                core.info(`SettingName ${settingName} has value with a length of ${value.length}`);
+            });
+        });
+        core.info(`ref: ${github.context.ref}`);
+        core.info(`repo: ${github.context.repo}`);
+        core.info(`sha: ${github.context.sha}`);
     }
     catch (ex) {
         console.error(ex);
@@ -46,7 +56,7 @@
     }
     function getFilesContentAsync(fileExtention) {
         var readFileTasks = [];
-        getFilesFromDir("../demo", [".json"])
+        getFilesFromDir(mainPath, ['.json'])
             .forEach(function (filePath) {
             if (filePath.toLowerCase().endsWith(fileExtention)) {
                 var t = readFileAsync(filePath, { encoding: 'utf-8' });

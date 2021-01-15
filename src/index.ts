@@ -1,18 +1,32 @@
 import * as core from '@actions/core';
-import * as  github from '@actions/github';
+import * as github from '@actions/github';
 import * as fs from 'fs';
 import * as path from 'path';
-
-// console.log(JSON.stringify(github.context));
 import * as util from 'util';
-const readFileAsync = util.promisify(fs.readFile)
+
+const readFileAsync = util.promisify(fs.readFile);
+
+const mainPath = './';
 
 try {
 
     let readFileTasks = getFilesContentAsync('scif.json');
 
     getSettingVariableNames(readFileTasks)
-        .then(settingNames => settingNames.forEach(s => console.log(s)));
+        .then(settingNames => {
+
+            settingNames.forEach(settingName => {
+
+                let value = core.getInput(settingName, { required: true });
+
+                core.info(`SettingName ${settingName} has value with a length of ${value.length}`);
+
+            });
+        });
+
+    core.info(`ref: ${github.context.ref}`);
+    core.info(`repo: ${github.context.repo}`);
+    core.info(`sha: ${github.context.sha}`);
 
 } catch (ex) {
     console.error(ex);
@@ -49,7 +63,7 @@ async function getSettingVariableNames(readFileTasks: Promise<string>[]): Promis
 
 function getFilesContentAsync(fileExtention: string): Promise<string>[] {
     var readFileTasks = [];
-    getFilesFromDir("../demo", [".json"])
+    getFilesFromDir(mainPath, ['.json'])
         .forEach(function (filePath: string) {
 
             if (filePath.toLowerCase().endsWith(fileExtention)) {
