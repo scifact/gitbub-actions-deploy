@@ -41,10 +41,10 @@
             flow.elements.forEach(element => {
                 if (element.settings != null) {
                     for (var setting in element.settings) {
-                        var value = element.settings[setting]?.toUpperCase();
+                        var value = element.settings[setting];
                         if (value) {
-                            if (settingNames.indexOf(value) < 0) {
-                                settingNames.push(value);
+                            if (settingNames.indexOf(value.toUpperCase()) < 0) {
+                                settingNames.push(value.toUpperCase());
                             }
                         }
                     }
