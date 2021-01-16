@@ -17,12 +17,17 @@ try {
 
             settingNames.forEach(settingName => {
 
-                let value = core.getInput(settingName, { required: true });
+                let value = core.getInput(settingName);
 
-                core.info(`SettingName ${settingName} has value with a length of ${value.length}`);
+                if (value) {
+                    core.info(`SettingName ${settingName} has value with a length of ${value.length}`);
+                } else {
+                    throw new Error(`SettingName ${settingName} does not contain a value`);
+                }
 
             });
-        });
+        })
+        .catch(e => { });
 
     core.info(`ref: ${github.context.ref}`);
     core.info(`repo: ${github.context.repo}`);
@@ -57,6 +62,14 @@ async function getSettingVariableNames(readFileTasks: Promise<string>[]): Promis
             });
 
         });
+
+
+    // var payload = {
+    //     flows: [],
+    //     settings: {
+
+    //     }
+    // };
 
     return settingNames;
 }

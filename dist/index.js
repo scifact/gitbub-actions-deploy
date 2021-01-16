@@ -21,10 +21,16 @@
         getSettingVariableNames(readFileTasks)
             .then(settingNames => {
             settingNames.forEach(settingName => {
-                let value = core.getInput(settingName, { required: true });
-                core.info(`SettingName ${settingName} has value with a length of ${value.length}`);
+                let value = core.getInput(settingName);
+                if (value) {
+                    core.info(`SettingName ${settingName} has value with a length of ${value.length}`);
+                }
+                else {
+                    throw new Error(`SettingName ${settingName} does not contain a value`);
+                }
             });
-        });
+        })
+            .catch(e => { });
         core.info(`ref: ${github.context.ref}`);
         core.info(`repo: ${github.context.repo}`);
         core.info(`sha: ${github.context.sha}`);
